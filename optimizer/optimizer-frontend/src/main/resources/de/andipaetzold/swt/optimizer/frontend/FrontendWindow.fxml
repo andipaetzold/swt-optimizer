@@ -9,13 +9,12 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="240.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="240.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.andipaetzold.swt.optimizer.frontend.FrontendController">
    <bottom>
       <HBox maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Label prefWidth="50.0" text="Ready" />
-            <ProgressBar maxWidth="1.7976931348623157E308" progress="0.0" HBox.hgrow="ALWAYS" />
+            <Label id="statusLabel" prefWidth="50.0" text="Ready" />
+            <ProgressBar id="progress" maxWidth="1.7976931348623157E308" progress="0.0" HBox.hgrow="ALWAYS" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -26,13 +25,13 @@
       </HBox>
    </bottom>
    <center>
-      <ListView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <ListView id="optimizerList" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </center>
    <top>
       <HBox maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Spinner editable="true" />
-            <Button mnemonicParsing="false" text="Start" />
+            <Spinner id="inputSpinner" editable="true" />
+            <Button id="startButton" mnemonicParsing="false" text="Start" />
          </children>
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

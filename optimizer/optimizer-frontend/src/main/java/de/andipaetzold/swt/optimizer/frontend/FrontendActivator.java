@@ -20,8 +20,6 @@ public class FrontendActivator implements BundleActivator {
     private void startUI(BundleContext ctx) {
         frontendWindow = new FrontendWindow();
         frontendWindow.show();
-
-        frontendWindow.show();
         frontendWindow.addOnCloseEventHandler(evt -> {
             try {
                 ctx.getBundle().stop();

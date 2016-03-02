@@ -19,7 +19,10 @@ public class FrontendWindow {
 
     public FrontendWindow() {
         try {
-            root = FXMLLoader.load(getClass().getResource("OptimizerWindow.fxml"));
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(this.getClass().getResource("FrontendWindow.fxml"));
+            loader.setClassLoader(this.getClass().getClassLoader());
+            root = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -10,12 +10,13 @@ public class OptimizerOne extends AbstractOptimizer {
         super(optimizerFactory);
     }
 
+    @Override
     public double optimize(double value) {
-    	try {
-			Thread.sleep(new Random().nextInt(5000));
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-    	return new Random().nextDouble();
+        try {
+            Thread.sleep(new Random().nextInt(5000));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return new Random().nextDouble();
     }
 }

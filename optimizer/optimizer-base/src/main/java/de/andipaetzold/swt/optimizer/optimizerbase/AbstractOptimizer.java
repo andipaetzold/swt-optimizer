@@ -7,6 +7,7 @@ public abstract class AbstractOptimizer implements Optimizer {
         this.optimizerFactory = optimizerFactory;
     }
 
+    @Override
     public String getOptimizerType() {
         return optimizerFactory.getOptimizerType();
     }

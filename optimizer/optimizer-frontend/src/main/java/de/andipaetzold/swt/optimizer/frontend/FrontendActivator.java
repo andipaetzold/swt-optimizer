@@ -7,30 +7,30 @@ public class FrontendActivator implements BundleActivator {
     private FrontendWindow frontendWindow;
 
     @Override
-    public void start(BundleContext arg0) throws Exception {
+    public void start(BundleContext context) throws Exception {
         JavaFxUtils.initJavaFx();
-        JavaFxUtils.runAndWait(() -> startUI(arg0));
+        JavaFxUtils.runAndWait(() -> startUI(context));
     }
 
     @Override
-    public void stop(BundleContext arg0) throws Exception {
-        JavaFxUtils.runAndWait(() -> stopUI(arg0));
+    public void stop(BundleContext context) throws Exception {
+        JavaFxUtils.runAndWait(() -> stopUI(context));
     }
 
-    private void startUI(BundleContext ctx) {
+    private void startUI(BundleContext context) {
         frontendWindow = new FrontendWindow();
         frontendWindow.show();
         frontendWindow.addOnCloseEventHandler(evt -> {
             try {
-                ctx.getBundle().stop();
-                stopUI(ctx);
+                context.getBundle().stop();
+                stopUI(context);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
     }
 
-    private void stopUI(BundleContext ctx) {
+    private void stopUI(BundleContext context) {
         frontendWindow.close();
     }
 

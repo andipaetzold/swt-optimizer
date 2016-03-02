@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -53,5 +54,13 @@ public class FrontendWindow {
 
     public void removeOnCloseEventHandler(EventHandler<WindowEvent> event) {
         onCloseHandlers.remove(event);
+    }
+
+    public void addOptimizer(OptimizerFactory optimizerFactory) {
+        System.out.println("add optimizer");
+    }
+
+    public void removeOptimizer(OptimizerFactory optimizerFactory) {
+        System.out.println("remove optimizer");
     }
 }

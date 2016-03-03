@@ -56,7 +56,7 @@ public class Manager implements OptimizeMethod, OptimizerListener {
         }
 
         // set status
-        frontend.setStatus("Ready");
+        frontend.setStatus("ready");
         frontend.setProgress(0);
 
         // set optimizer method
@@ -80,6 +80,7 @@ public class Manager implements OptimizeMethod, OptimizerListener {
             return;
         }
 
+        setStatus("optimizing...", 0);
         results = new HashMap<>();
 
         for (OptimizerFactory factory : optimizers) {
@@ -96,15 +97,16 @@ public class Manager implements OptimizeMethod, OptimizerListener {
 
     @Override
     public void handleOptimizerStatusChanged(OptimizerStatusChangedEvent event) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void handleOptimizerResult(OptimizerResultEvent event) {
         results.put(event.getSource().getOptimizerType(), event.getResult());
 
+        setStatus("optimizing...", Math.min(1, results.size() / optimizers.size()));
+
         if (results.size() == optimizers.size()) {
+            setStatus("done", 1);
             for (FrontendInterface frontend : frontends) {
                 frontend.handleResults(results);
             }

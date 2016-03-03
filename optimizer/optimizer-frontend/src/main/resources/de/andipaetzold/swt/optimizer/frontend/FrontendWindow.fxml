@@ -13,7 +13,7 @@
    <bottom>
       <HBox maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Label fx:id="statusLabel" prefWidth="50.0" text="Ready" />
+            <Label fx:id="statusLabel" prefWidth="75.0" text="ready" />
             <ProgressBar fx:id="progress" maxWidth="1.7976931348623157E308" progress="0.0" HBox.hgrow="ALWAYS" />
          </children>
          <padding>

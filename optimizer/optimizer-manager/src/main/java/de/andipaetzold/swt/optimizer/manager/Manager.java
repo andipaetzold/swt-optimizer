@@ -41,6 +41,11 @@ public class Manager {
     public void addStatusListener(FrontendInterface listener) {
         listeners.add(listener);
 
+        // add all optimizers to list
+        for (OptimizerFactory optimizer : optimizers) {
+            listener.addOptimizer(optimizer.getOptimizerType());
+        }
+
         // set optimizer method
         Optimizer optimizer = new Optimizer() {
             @Override

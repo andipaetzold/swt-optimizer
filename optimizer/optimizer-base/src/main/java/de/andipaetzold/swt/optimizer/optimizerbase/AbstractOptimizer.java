@@ -6,7 +6,6 @@ import java.util.List;
 import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerListener;
 import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerResultEvent;
 import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerStatusChangedEvent;
-import de.andipaetzold.swt.optimizer.optimizerbase.factory.OptimizerFactory;
 
 public abstract class AbstractOptimizer implements Optimizer {
 
@@ -20,11 +19,6 @@ public abstract class AbstractOptimizer implements Optimizer {
     @Override
     public String getOptimizerType() {
         return factory.getOptimizerType();
-    }
-
-    @Override
-    public OptimizerFactory getFactory() {
-        return factory;
     }
 
     /// Listeners ///
@@ -41,14 +35,14 @@ public abstract class AbstractOptimizer implements Optimizer {
     }
 
     /// Result ///
-    private double result = 0;
+    private Double result = null;
 
     @Override
-    public double getResult() {
+    public Double getResult() {
         return result;
     }
 
-    protected void setResult(double result) {
+    protected void setResult(Double result) {
         this.result = result;
 
         for (OptimizerListener listener : listeners) {

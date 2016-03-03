@@ -3,8 +3,8 @@ package de.andipaetzold.swt.optimizer.optimizertwo;
 import java.util.Random;
 
 import de.andipaetzold.swt.optimizer.optimizerbase.AbstractOptimizer;
+import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
 import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerStatus;
-import de.andipaetzold.swt.optimizer.optimizerbase.factory.OptimizerFactory;
 
 public class OptimizerTwo extends AbstractOptimizer {
     public OptimizerTwo(OptimizerFactory optimizerFactory) {

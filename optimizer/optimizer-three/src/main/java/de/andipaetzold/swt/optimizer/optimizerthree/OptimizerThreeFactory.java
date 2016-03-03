@@ -1,9 +1,9 @@
 package de.andipaetzold.swt.optimizer.optimizerthree;
 
 import de.andipaetzold.swt.optimizer.optimizerbase.Optimizer;
-import de.andipaetzold.swt.optimizer.optimizerbase.factory.AbstractOptimizerFactory;
+import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
 
-public class OptimizerThreeFactory extends AbstractOptimizerFactory {
+public class OptimizerThreeFactory implements OptimizerFactory {
     @Override
     public Optimizer createOptimizer() {
         return new OptimizerThree(this);

@@ -4,7 +4,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
-import de.andipaetzold.swt.optimizer.optimizerbase.factory.OptimizerFactory;
+import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
 
 public class OptimizerTracker implements ServiceTrackerCustomizer<OptimizerFactory, OptimizerFactory> {
     private BundleContext bundleContext;

@@ -5,7 +5,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
-import de.andipaetzold.swt.optimizer.optimizerbase.factory.OptimizerFactory;
+import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
 
 public class ManagerActivator implements BundleActivator {
 

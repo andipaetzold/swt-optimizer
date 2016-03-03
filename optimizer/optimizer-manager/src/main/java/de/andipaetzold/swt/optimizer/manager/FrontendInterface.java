@@ -1,10 +1,8 @@
 package de.andipaetzold.swt.optimizer.manager;
 
-import de.andipaetzold.swt.optimizer.optimizerbase.Optimizer;
+import java.util.Map;
 
 public interface FrontendInterface {
-    public void setOptimizeMethod(Optimizer optimizer);
-
     public void setProgress(double value);
 
     public void setStatus(String value);
@@ -12,4 +10,8 @@ public interface FrontendInterface {
     public void addOptimizer(String optimizer);
 
     public void removeOptimizer(String optimizer);
+
+    public void setOptimizeMethod(OptimizeMethod optimizeMethod);
+
+    public void handleResults(Map<String, Double> results);
 }

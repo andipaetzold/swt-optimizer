@@ -1,10 +1,11 @@
 package de.andipaetzold.swt.optimizer.frontend;
 
 import java.net.URL;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import de.andipaetzold.swt.optimizer.manager.FrontendInterface;
-import de.andipaetzold.swt.optimizer.optimizerbase.Optimizer;
+import de.andipaetzold.swt.optimizer.manager.OptimizeMethod;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -19,7 +20,7 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 
 public class FrontendController implements Initializable, FrontendInterface {
-
+    /// initialize ///
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         JavaFxUtils.runAndWait(() -> {
@@ -33,6 +34,7 @@ public class FrontendController implements Initializable, FrontendInterface {
         });
     }
 
+    /// Spinner ///
     @FXML
     private Spinner<Double> inputSpinner;
 
@@ -40,30 +42,26 @@ public class FrontendController implements Initializable, FrontendInterface {
         return inputSpinner.getValue();
     }
 
+    /// Start Button ///
     @FXML
     private Button startButton;
 
     @FXML
-    private void optimize() {
-        if (optimizer != null) {
-            double result = optimizer.optimize(getInputSpinnerValue());
-
-            // show result
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Result");
-            alert.setHeaderText(null);
-            alert.setContentText(Double.toString(result));
-            alert.showAndWait();
+    private void startButtonClicked() {
+        if (optimizeMethod != null) {
+            optimizeMethod.optimize(getInputSpinnerValue());
         }
     }
 
-    private Optimizer optimizer = null;
+    /// Optimize Method ///
+    private OptimizeMethod optimizeMethod = null;
 
     @Override
-    public void setOptimizeMethod(Optimizer optimizer) {
-        this.optimizer = optimizer;
+    public void setOptimizeMethod(OptimizeMethod optimizeMethod) {
+        this.optimizeMethod = optimizeMethod;
     }
 
+    /// Optimizer List ///
     @FXML
     private ListView<String> optimizerList;
     private ObservableList<String> observableOptimizerList = FXCollections.observableArrayList();
@@ -82,6 +80,7 @@ public class FrontendController implements Initializable, FrontendInterface {
         });
     }
 
+    /// Status ///
     @FXML
     private Label statusLabel;
     @FXML
@@ -98,6 +97,28 @@ public class FrontendController implements Initializable, FrontendInterface {
     public void setStatus(String value) {
         JavaFxUtils.runAndWait(() -> {
             statusLabel.setText(value);
+        });
+    }
+
+    /// Result ///
+    @Override
+    public void handleResults(Map<String, Double> results) {
+        // Text
+        StringBuffer sb = new StringBuffer();
+        for (Map.Entry<String, Double> result : results.entrySet()) {
+            sb.append(result.getKey());
+            sb.append(": ");
+            sb.append(result.getValue());
+            sb.append("\n");
+        }
+
+        // Alert
+        JavaFxUtils.runAndWait(() -> {
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.setTitle("Result");
+            alert.setHeaderText(null);
+            alert.setContentText(sb.toString());
+            alert.showAndWait();
         });
     }
 }

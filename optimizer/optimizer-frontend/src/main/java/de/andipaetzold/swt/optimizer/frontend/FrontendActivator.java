@@ -27,7 +27,7 @@ public class FrontendActivator implements BundleActivator {
             try {
                 ServiceReference<Manager> managerReference = context.getServiceReference(Manager.class);
                 Manager manager = context.getServiceObjects(managerReference).getService();
-                manager.removeStatusListener(frontendWindow.getController());
+                manager.removeFrontend(frontendWindow.getController());
             } catch (Exception e) {
                 System.out.println("Problem removing frontend from manager");
             }
@@ -44,7 +44,7 @@ public class FrontendActivator implements BundleActivator {
         try {
             ServiceReference<Manager> managerReference = context.getServiceReference(Manager.class);
             Manager manager = context.getServiceObjects(managerReference).getService();
-            manager.addStatusListener(frontendWindow.getController());
+            manager.addFrontend(frontendWindow.getController());
         } catch (Exception e) {
             System.out.println("Problem adding frontend to manager");
         }

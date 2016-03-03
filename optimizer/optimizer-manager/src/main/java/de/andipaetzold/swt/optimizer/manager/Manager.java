@@ -20,22 +20,28 @@ public class Manager implements OptimizeMethod, OptimizerListener {
 
     /// Optimizer ///
     public void addOptimizer(OptimizerFactory factory) {
+        // add
         factories.put(factory, new Tuple<Thread, Double>(null, null));
 
         // send to listeners
         for (FrontendInterface frontend : frontends) {
             frontend.addOptimizer(factory.getOptimizerType());
         }
+
+        // start if running
+        if (isRunning()) {
+            startOptimizer(factory);
+        }
     }
 
     public void removeOptimizer(OptimizerFactory factory) {
+        // remove
         factories.remove(factory);
 
         // send to listeners
         for (FrontendInterface frontend : frontends) {
             frontend.removeOptimizer(factory.getOptimizerType());
         }
-
     }
 
     /// Status Listener ///
@@ -74,34 +80,51 @@ public class Manager implements OptimizeMethod, OptimizerListener {
     }
 
     /// Optimize ///
+    private double startValue;
+
     @Override
     public void optimize(double value) {
         if (isRunning()) {
             return;
         }
 
+        startValue = value;
         for (Map.Entry<OptimizerFactory, Tuple<Thread, Double>> entry : factories.entrySet()) {
+            // set result
             entry.getValue().item2 = null;
 
-            Thread t = new Thread(() -> {
-                Optimizer optimizer = entry.getKey().createOptimizer();
-
-                // set result to null
-                for (FrontendInterface frontend : frontends) {
-                    frontend.setOptimizerResult(optimizer.getOptimizerType(), null);
-                }
-
-                // add listener and start optimizing
-                optimizer.addOptimizerListener(this);
-                optimizer.optimize(value);
-            });
-            entry.getValue().item1 = t;
-            t.start();
+            // start
+            startOptimizer(entry.getKey());
         }
     }
 
+    private void startOptimizer(OptimizerFactory factory) {
+        Thread t = new Thread(() -> {
+            Optimizer optimizer = factory.createOptimizer();
+
+            // set result to null
+            for (FrontendInterface frontend : frontends) {
+                frontend.setOptimizerResult(optimizer.getOptimizerType(), null);
+            }
+
+            // add listener and start optimizing
+            optimizer.addOptimizerListener(this);
+            optimizer.optimize(startValue);
+        });
+        t.start();
+
+        factories.get(factory).item1 = t;
+    }
+
+    /// Handle Optimizer///
     @Override
     public void handleOptimizerStatusChanged(OptimizerStatusChangedEvent event) {
+        // check if in map
+        if (!factories.containsKey(event.getSource().getFactory())) {
+            return;
+        }
+
+        // send status
         for (FrontendInterface frontend : frontends) {
             frontend.setOptimizerStatus(event.getSource().getOptimizerType(), event.getStatus());
         }
@@ -109,13 +132,21 @@ public class Manager implements OptimizeMethod, OptimizerListener {
 
     @Override
     public void handleOptimizerResult(OptimizerResultEvent event) {
+        // check if in map
+        if (!factories.containsKey(event.getSource().getFactory())) {
+            return;
+        }
+
+        // set result
         factories.get(event.getSource().getFactory()).item2 = event.getResult();
 
+        // send result
         for (FrontendInterface frontend : frontends) {
             frontend.setOptimizerResult(event.getSource().getOptimizerType(), event.getResult());
         }
     }
 
+    /// Running ///
     private boolean isRunning() {
         for (Tuple<Thread, Double> entry : factories.values()) {
             if (entry.item1 != null && entry.item1.isAlive()) {
@@ -124,5 +155,4 @@ public class Manager implements OptimizeMethod, OptimizerListener {
         }
         return false;
     }
-
 }

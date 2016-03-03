@@ -18,6 +18,8 @@
 	  	<module>optimizer-frontend</module>
 	  	<module>optimizer-base</module>
 	  	<module>optimizer-one</module>
+	  	<module>optimizer-two</module>
+	  	<module>optimizer-three</module>
 	</modules>
 
 	<build>

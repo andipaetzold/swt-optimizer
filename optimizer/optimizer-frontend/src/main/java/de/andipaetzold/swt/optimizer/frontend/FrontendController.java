@@ -1,23 +1,23 @@
 package de.andipaetzold.swt.optimizer.frontend;
 
 import java.net.URL;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import de.andipaetzold.swt.optimizer.manager.FrontendInterface;
 import de.andipaetzold.swt.optimizer.manager.OptimizeMethod;
+import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerStatus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 
 public class FrontendController implements Initializable, FrontendInterface {
     /// initialize ///
@@ -29,8 +29,15 @@ public class FrontendController implements Initializable, FrontendInterface {
                     0, 0.1);
             inputSpinner.setValueFactory(factory);
 
-            // list
-            optimizerList.setItems(observableOptimizerList);
+            // table
+            optimizerColumn.setCellValueFactory(new PropertyValueFactory<>("optimizer"));
+            statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
+            resultColumn.setCellValueFactory(new PropertyValueFactory<>("result"));
+            optimizerTable.setItems(observableOptimizerStatus);
+
+            // status / progress
+            statusLabel.setText(OptimizerStatus.WAITING.toString());
+            progress.setProgress(0);
         });
     }
 
@@ -61,23 +68,60 @@ public class FrontendController implements Initializable, FrontendInterface {
         this.optimizeMethod = optimizeMethod;
     }
 
-    /// Optimizer List ///
+    /// Optimizer Table ///
     @FXML
-    private ListView<String> optimizerList;
-    private ObservableList<String> observableOptimizerList = FXCollections.observableArrayList();
+    private TableView<OptimizerTableRow> optimizerTable;
+    private ObservableList<OptimizerTableRow> observableOptimizerStatus = FXCollections.observableArrayList();
+
+    @FXML
+    private TableColumn<OptimizerTableRow, String> optimizerColumn;
+    @FXML
+    private TableColumn<OptimizerTableRow, String> statusColumn;
+    @FXML
+    private TableColumn<OptimizerTableRow, String> resultColumn;
+
+    @Override
+    public void setOptimizerResult(String optimizer, Double result) {
+        OptimizerTableRow optimizerStatus = getOptimizerStatus(optimizer);
+        if (optimizerStatus != null) {
+            optimizerStatus.setResult(result);
+        }
+    }
+
+    @Override
+    public void setOptimizerStatus(String optimizer, OptimizerStatus status) {
+        OptimizerTableRow optimizerStatus = getOptimizerStatus(optimizer);
+        if (optimizerStatus != null) {
+            optimizerStatus.setStatus(status);
+            recalcProgress();
+        }
+    }
 
     @Override
     public void addOptimizer(String optimizer) {
-        JavaFxUtils.runAndWait(() -> {
-            observableOptimizerList.add(optimizer);
-        });
+        OptimizerTableRow status = getOptimizerStatus(optimizer);
+        if (status == null) {
+            observableOptimizerStatus.add(new OptimizerTableRow(optimizer));
+            recalcProgress();
+        }
     }
 
     @Override
     public void removeOptimizer(String optimizer) {
-        JavaFxUtils.runAndWait(() -> {
-            observableOptimizerList.remove(optimizer);
-        });
+        OptimizerTableRow optimizerStatus = getOptimizerStatus(optimizer);
+        if (optimizerStatus != null) {
+            observableOptimizerStatus.remove(optimizerStatus);
+            recalcProgress();
+        }
+    }
+
+    private OptimizerTableRow getOptimizerStatus(String optimizer) {
+        for (OptimizerTableRow optimizerStatus : observableOptimizerStatus) {
+            if (optimizerStatus.getOptimizer().equals(optimizer)) {
+                return optimizerStatus;
+            }
+        }
+        return null;
     }
 
     /// Status ///
@@ -86,39 +130,23 @@ public class FrontendController implements Initializable, FrontendInterface {
     @FXML
     private ProgressBar progress;
 
-    @Override
-    public void setProgress(double value) {
-        JavaFxUtils.runAndWait(() -> {
-            progress.setProgress(value);
-        });
-    }
-
-    @Override
-    public void setStatus(String value) {
-        JavaFxUtils.runAndWait(() -> {
-            statusLabel.setText(value);
-        });
-    }
-
-    /// Result ///
-    @Override
-    public void handleResults(Map<String, Double> results) {
-        // Text
-        StringBuffer sb = new StringBuffer();
-        for (Map.Entry<String, Double> result : results.entrySet()) {
-            sb.append(result.getKey());
-            sb.append(": ");
-            sb.append(result.getValue());
-            sb.append("\n");
+    public void recalcProgress() {
+        int sum = observableOptimizerStatus.size();
+        int finished = 0;
+        for (OptimizerTableRow observableStatus : observableOptimizerStatus) {
+            if (observableStatus.getStatus().equals(OptimizerStatus.FINISHED.toString())) {
+                finished++;
+            }
         }
+        double result = finished / (double) sum;
 
-        // Alert
         JavaFxUtils.runAndWait(() -> {
-            Alert alert = new Alert(AlertType.INFORMATION);
-            alert.setTitle("Result");
-            alert.setHeaderText(null);
-            alert.setContentText(sb.toString());
-            alert.showAndWait();
+            progress.setProgress(result);
+            if (result == 1) {
+                statusLabel.setText(OptimizerStatus.FINISHED.toString());
+            } else {
+                statusLabel.setText(OptimizerStatus.RUNNING.toString());
+            }
         });
     }
 }

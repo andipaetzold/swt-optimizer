@@ -1,13 +1,10 @@
 package de.andipaetzold.swt.optimizer.manager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.andipaetzold.swt.optimizer.optimizerbase.Optimizer;
 import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
-import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerStatus;
 import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerListener;
 import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerResultEvent;
 import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerStatusChangedEvent;
@@ -23,7 +20,7 @@ public class Manager implements OptimizeMethod, OptimizerListener {
     public void addOptimizer(OptimizerFactory optimizerFactory) {
         optimizers.add(optimizerFactory);
 
-        // update listeners
+        // send to listeners
         for (FrontendInterface frontend : frontends) {
             frontend.addOptimizer(optimizerFactory.getOptimizerType());
         }
@@ -32,18 +29,11 @@ public class Manager implements OptimizeMethod, OptimizerListener {
     public void removeOptimizer(OptimizerFactory optimizerFactory) {
         optimizers.remove(optimizerFactory);
 
-        // update listeners
+        // send to listeners
         for (FrontendInterface frontend : frontends) {
             frontend.removeOptimizer(optimizerFactory.getOptimizerType());
         }
-    }
 
-    /// Status ///
-    private void setStatus(String status, double progress) {
-        for (FrontendInterface listener : frontends) {
-            listener.setStatus(status);
-            listener.setProgress(progress);
-        }
     }
 
     /// Status Listener ///
@@ -54,10 +44,6 @@ public class Manager implements OptimizeMethod, OptimizerListener {
         for (OptimizerFactory optimizer : optimizers) {
             frontend.addOptimizer(optimizer.getOptimizerType());
         }
-
-        // set status
-        frontend.setStatus("ready");
-        frontend.setProgress(0);
 
         // set optimizer method
         frontend.setOptimizeMethod(this);
@@ -72,16 +58,14 @@ public class Manager implements OptimizeMethod, OptimizerListener {
     }
 
     /// Optimize ///
-    private OptimizerStatus status = OptimizerStatus.WAITING;
+    private boolean running = false;
 
     @Override
     public void optimize(double value) {
-        if (status != OptimizerStatus.WAITING) {
+        if (running) {
             return;
         }
-
-        setStatus("optimizing...", 0);
-        results = new HashMap<>();
+        running = true;
 
         for (OptimizerFactory factory : optimizers) {
             new Thread(() -> {
@@ -89,29 +73,23 @@ public class Manager implements OptimizeMethod, OptimizerListener {
                 optimizer.addOptimizerListener(this);
                 optimizer.optimize(value);
             }).start();
-
         }
     }
 
-    private Map<String, Double> results;
-
     @Override
     public void handleOptimizerStatusChanged(OptimizerStatusChangedEvent event) {
+        for (FrontendInterface frontend : frontends) {
+            frontend.setOptimizerStatus(event.getSource().getOptimizerType(), event.getStatus());
+        }
     }
 
     @Override
     public void handleOptimizerResult(OptimizerResultEvent event) {
-        results.put(event.getSource().getOptimizerType(), event.getResult());
-
-        setStatus("optimizing...", Math.min(1, results.size() / (double) optimizers.size()));
-
-        if (results.size() == optimizers.size()) {
-            setStatus("done", 1);
-            for (FrontendInterface frontend : frontends) {
-                frontend.handleResults(results);
-            }
-            status = OptimizerStatus.WAITING;
+        for (FrontendInterface frontend : frontends) {
+            frontend.setOptimizerResult(event.getSource().getOptimizerType(), event.getResult());
         }
+
+        // TODO: done
     }
 
 }

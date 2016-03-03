@@ -28,11 +28,7 @@ public class FrontendActivator implements BundleActivator {
                 ServiceReference<Manager> managerReference = context.getServiceReference(Manager.class);
                 Manager manager = context.getServiceObjects(managerReference).getService();
                 manager.removeFrontend(frontendWindow.getController());
-            } catch (Exception e) {
-                System.out.println("Problem removing frontend from manager");
-            }
 
-            try {
                 context.getBundle().stop();
                 stopUI(context);
             } catch (Exception e) {

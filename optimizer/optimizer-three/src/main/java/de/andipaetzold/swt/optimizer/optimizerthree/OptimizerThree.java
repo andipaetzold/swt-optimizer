@@ -15,7 +15,7 @@ public class OptimizerThree extends AbstractOptimizer {
     public void optimize(double value) {
         setStatus(OptimizerStatus.RUNNING);
         try {
-            Thread.sleep(new Random().nextInt(5000));
+            Thread.sleep(15000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

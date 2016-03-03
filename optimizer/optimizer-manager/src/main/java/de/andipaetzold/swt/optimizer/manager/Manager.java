@@ -32,10 +32,21 @@ public class Manager {
     }
 
     public double optimize(double value) {
+        int cur = 0;
+        int max = optimizers.size();
         for (OptimizerFactory optimizer : optimizers) {
+            setStatus(optimizer.getOptimizerType() + "...", cur / max);
             value = optimizer.createOptimizer().optimize(value);
         }
+        setStatus("Done", 1);
         return value;
+    }
+
+    private void setStatus(String status, double progress) {
+        for (FrontendInterface listener : listeners) {
+            listener.setStatus(status);
+            listener.setProgress(progress);
+        }
     }
 
     public void addStatusListener(FrontendInterface listener) {
@@ -45,6 +56,10 @@ public class Manager {
         for (OptimizerFactory optimizer : optimizers) {
             listener.addOptimizer(optimizer.getOptimizerType());
         }
+
+        // set status
+        listener.setStatus("Ready");
+        listener.setProgress(0);
 
         // set optimizer method
         Optimizer optimizer = new Optimizer() {

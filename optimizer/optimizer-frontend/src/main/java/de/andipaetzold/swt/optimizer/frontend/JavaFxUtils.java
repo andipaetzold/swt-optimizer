@@ -33,8 +33,4 @@ public class JavaFxUtils {
             e.printStackTrace();
         }
     }
-
-    public static void runLater(Runnable runnable) {
-        Platform.runLater(runnable);
-    }
 }

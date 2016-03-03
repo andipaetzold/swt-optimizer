@@ -22,7 +22,7 @@ public class FrontendController implements Initializable, FrontendInterface {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        JavaFxUtils.runLater(() -> {
+        JavaFxUtils.runAndWait(() -> {
             // spinner
             SpinnerValueFactory<Double> factory = new SpinnerValueFactory.DoubleSpinnerValueFactory(0, Double.MAX_VALUE,
                     0, 0.1);
@@ -70,14 +70,14 @@ public class FrontendController implements Initializable, FrontendInterface {
 
     @Override
     public void addOptimizer(String optimizer) {
-        JavaFxUtils.runLater(() -> {
+        JavaFxUtils.runAndWait(() -> {
             observableOptimizerList.add(optimizer);
         });
     }
 
     @Override
     public void removeOptimizer(String optimizer) {
-        JavaFxUtils.runLater(() -> {
+        JavaFxUtils.runAndWait(() -> {
             observableOptimizerList.remove(optimizer);
         });
     }
@@ -89,14 +89,14 @@ public class FrontendController implements Initializable, FrontendInterface {
 
     @Override
     public void setProgress(double value) {
-        JavaFxUtils.runLater(() -> {
+        JavaFxUtils.runAndWait(() -> {
             progress.setProgress(value);
         });
     }
 
     @Override
     public void setStatus(String value) {
-        JavaFxUtils.runLater(() -> {
+        JavaFxUtils.runAndWait(() -> {
             statusLabel.setText(value);
         });
     }

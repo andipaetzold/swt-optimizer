@@ -2,8 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -13,10 +12,6 @@
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="240.0" prefWidth="320.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.andipaetzold.swt.optimizer.frontend.FrontendController">
    <bottom>
       <HBox maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
-         <children>
-            <Label fx:id="statusLabel" prefWidth="75.0" text="ready" />
-            <ProgressBar fx:id="progress" maxWidth="1.7976931348623157E308" progress="0.0" HBox.hgrow="ALWAYS" />
-         </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
          </padding>
@@ -26,10 +21,11 @@
       </HBox>
    </bottom>
    <top>
-      <HBox maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
+      <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
             <Spinner fx:id="inputSpinner" editable="true" />
             <Button fx:id="startButton" mnemonicParsing="false" onMouseClicked="#startButtonClicked" text="Start" />
+            <ProgressIndicator fx:id="progress" progress="0.0" />
          </children>
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -37,11 +33,11 @@
       </HBox>
    </top>
    <center>
-      <TableView prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" fx:id="optimizerTable">
+      <TableView fx:id="optimizerTable" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <columns>
-          	<TableColumn editable="false" prefWidth="75.0" text="Optimizer" fx:id="optimizerColumn" />
-          	<TableColumn editable="false" prefWidth="75.0" text="Status" fx:id="statusColumn" />
-            <TableColumn editable="false" prefWidth="75.0" text="Result" sortable="false" fx:id="resultColumn" />
+          	<TableColumn fx:id="optimizerColumn" editable="false" prefWidth="75.0" text="Optimizer" />
+          	<TableColumn fx:id="statusColumn" editable="false" prefWidth="75.0" text="Status" />
+            <TableColumn fx:id="resultColumn" editable="false" prefWidth="75.0" sortable="false" text="Result" />
         </columns>
       </TableView>
    </center>

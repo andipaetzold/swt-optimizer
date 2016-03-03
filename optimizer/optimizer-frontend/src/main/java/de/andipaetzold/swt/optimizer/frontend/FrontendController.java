@@ -11,8 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
@@ -36,7 +35,6 @@ public class FrontendController implements Initializable, FrontendInterface {
             optimizerTable.setItems(observableOptimizerStatus);
 
             // status / progress
-            statusLabel.setText(OptimizerStatus.WAITING.toString());
             progress.setProgress(0);
         });
     }
@@ -124,11 +122,9 @@ public class FrontendController implements Initializable, FrontendInterface {
         return null;
     }
 
-    /// Status ///
+    /// Progress ///
     @FXML
-    private Label statusLabel;
-    @FXML
-    private ProgressBar progress;
+    private ProgressIndicator progress;
 
     public void recalcProgress() {
         int sum = observableOptimizerStatus.size();
@@ -142,11 +138,6 @@ public class FrontendController implements Initializable, FrontendInterface {
 
         JavaFxUtils.runAndWait(() -> {
             progress.setProgress(result);
-            if (result == 1) {
-                statusLabel.setText(OptimizerStatus.FINISHED.toString());
-            } else {
-                statusLabel.setText(OptimizerStatus.RUNNING.toString());
-            }
         });
     }
 }

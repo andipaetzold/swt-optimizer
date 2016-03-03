@@ -1,6 +1,5 @@
 package de.andipaetzold.swt.optimizer.frontend;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
 
 import javafx.application.Platform;
@@ -21,17 +20,17 @@ public class JavaFxUtils {
         Platform.runLater(() -> Platform.exit());
     }
 
-    public static void runAndWait(Runnable runnable) throws InterruptedException, ExecutionException {
-        if (Platform.isFxApplicationThread()) {
-            try {
+    public static void runAndWait(Runnable runnable) {
+        try {
+            if (Platform.isFxApplicationThread()) {
                 runnable.run();
-            } catch (Exception e) {
-                throw new ExecutionException(e);
+            } else {
+                FutureTask<Object> futureTask = new FutureTask<>(runnable, null);
+                Platform.runLater(futureTask);
+                futureTask.get();
             }
-        } else {
-            FutureTask<Object> futureTask = new FutureTask<>(runnable, null);
-            Platform.runLater(futureTask);
-            futureTask.get();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

@@ -11,13 +11,11 @@ public class OptimizerOneActivator implements BundleActivator {
 
     @Override
     public void start(BundleContext bundleContext) throws Exception {
-        System.out.println("Register Optimizer One");
         registration = bundleContext.registerService(OptimizerFactory.class, new OptimizerOneFactory(), null);
     }
 
     @Override
     public void stop(BundleContext bundleContext) throws Exception {
-        System.out.println("Unregister Optimizer One");
         registration.unregister();
     }
 }

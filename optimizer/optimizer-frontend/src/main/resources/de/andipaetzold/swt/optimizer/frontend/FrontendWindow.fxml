@@ -13,8 +13,8 @@
    <bottom>
       <HBox maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Label id="statusLabel" prefWidth="50.0" text="Ready" />
-            <ProgressBar id="progress" maxWidth="1.7976931348623157E308" progress="0.0" HBox.hgrow="ALWAYS" />
+            <Label fx:id="statusLabel" prefWidth="50.0" text="Ready" />
+            <ProgressBar fx:id="progress" maxWidth="1.7976931348623157E308" progress="0.0" HBox.hgrow="ALWAYS" />
          </children>
          <padding>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -25,13 +25,13 @@
       </HBox>
    </bottom>
    <center>
-      <ListView id="optimizerList" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
+      <ListView fx:id="optimizerList" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" />
    </center>
    <top>
       <HBox maxWidth="1.7976931348623157E308" spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Spinner id="inputSpinner" editable="true" />
-            <Button id="startButton" mnemonicParsing="false" text="Start" />
+            <Spinner fx:id="inputSpinner" editable="true" />
+            <Button fx:id="startButton" mnemonicParsing="false" text="Start" />
          </children>
          <BorderPane.margin>
             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

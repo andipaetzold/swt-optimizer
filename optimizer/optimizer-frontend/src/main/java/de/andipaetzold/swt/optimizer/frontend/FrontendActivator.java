@@ -2,6 +2,9 @@ package de.andipaetzold.swt.optimizer.frontend;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+
+import de.andipaetzold.swt.optimizer.manager.Manager;
 
 public class FrontendActivator implements BundleActivator {
     private FrontendWindow frontendWindow;
@@ -22,12 +25,29 @@ public class FrontendActivator implements BundleActivator {
         frontendWindow.show();
         frontendWindow.addOnCloseEventHandler(evt -> {
             try {
+                try {
+                    ServiceReference<Manager> managerReference = context.getServiceReference(Manager.class);
+                    Manager manager = context.getServiceObjects(managerReference).getService();
+                    manager.removeStatusListener(frontendWindow.getController());
+                } catch (Exception e) {
+                    System.out.println("Problem removing frontend from manager");
+                }
+
                 context.getBundle().stop();
                 stopUI(context);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
+
+        // add to manager
+        try {
+            ServiceReference<Manager> managerReference = context.getServiceReference(Manager.class);
+            Manager manager = context.getServiceObjects(managerReference).getService();
+            manager.addStatusListener(frontendWindow.getController());
+        } catch (Exception e) {
+            System.out.println("Problem adding frontend to manager");
+        }
     }
 
     private void stopUI(BundleContext context) {

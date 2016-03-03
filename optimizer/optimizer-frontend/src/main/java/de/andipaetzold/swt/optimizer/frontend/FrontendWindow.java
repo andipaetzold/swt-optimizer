@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -15,6 +14,7 @@ import javafx.stage.WindowEvent;
 public class FrontendWindow {
     private Stage stage;
     private Parent root = null;
+    private FrontendController controller;
 
     private List<EventHandler<WindowEvent>> onCloseHandlers = new ArrayList<>();
 
@@ -24,6 +24,7 @@ public class FrontendWindow {
             loader.setLocation(this.getClass().getResource("FrontendWindow.fxml"));
             loader.setClassLoader(this.getClass().getClassLoader());
             root = loader.load();
+            controller = loader.getController();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -56,11 +57,7 @@ public class FrontendWindow {
         onCloseHandlers.remove(event);
     }
 
-    public void addOptimizer(OptimizerFactory optimizerFactory) {
-        System.out.println("add optimizer");
-    }
-
-    public void removeOptimizer(OptimizerFactory optimizerFactory) {
-        System.out.println("remove optimizer");
+    public FrontendController getController() {
+        return controller;
     }
 }

@@ -3,11 +3,12 @@ package de.andipaetzold.swt.optimizer.manager;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.andipaetzold.swt.optimizer.optimizerbase.Optimizer;
 import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
 
 public class Manager {
     private List<OptimizerFactory> optimizers = new ArrayList<>();
-    private List<StatusListener> listeners = new ArrayList<>();
+    private List<FrontendInterface> listeners = new ArrayList<>();
 
     public Manager() {
     }
@@ -16,8 +17,7 @@ public class Manager {
         optimizers.add(optimizerFactory);
 
         // update listeners
-        for (StatusListener listener : listeners) {
-            System.out.println(listener);
+        for (FrontendInterface listener : listeners) {
             listener.addOptimizer(optimizerFactory.getOptimizerType());
         }
     }
@@ -26,7 +26,7 @@ public class Manager {
         optimizers.remove(optimizerFactory);
 
         // update listeners
-        for (StatusListener listener : listeners) {
+        for (FrontendInterface listener : listeners) {
             listener.removeOptimizer(optimizerFactory.getOptimizerType());
         }
     }
@@ -38,11 +38,29 @@ public class Manager {
         return value;
     }
 
-    public void addStatusListener(StatusListener listener) {
+    public void addStatusListener(FrontendInterface listener) {
         listeners.add(listener);
+
+        // set optimizer method
+        Optimizer optimizer = new Optimizer() {
+            @Override
+            public double optimize(double value) {
+                return Manager.this.optimize(value);
+            }
+
+            @Override
+            public String getOptimizerType() {
+                return null;
+            }
+        };
+        listener.setOptimizeMethod(optimizer);
+
     }
 
-    public void removeStatusListener(StatusListener listener) {
+    public void removeStatusListener(FrontendInterface listener) {
         listeners.remove(listener);
+
+        // remove optimizer method
+        listener.setOptimizeMethod(null);
     }
 }

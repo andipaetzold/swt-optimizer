@@ -25,14 +25,14 @@ public class FrontendActivator implements BundleActivator {
         frontendWindow.show();
         frontendWindow.addOnCloseEventHandler(evt -> {
             try {
-                try {
-                    ServiceReference<Manager> managerReference = context.getServiceReference(Manager.class);
-                    Manager manager = context.getServiceObjects(managerReference).getService();
-                    manager.removeStatusListener(frontendWindow.getController());
-                } catch (Exception e) {
-                    System.out.println("Problem removing frontend from manager");
-                }
+                ServiceReference<Manager> managerReference = context.getServiceReference(Manager.class);
+                Manager manager = context.getServiceObjects(managerReference).getService();
+                manager.removeStatusListener(frontendWindow.getController());
+            } catch (Exception e) {
+                System.out.println("Problem removing frontend from manager");
+            }
 
+            try {
                 context.getBundle().stop();
                 stopUI(context);
             } catch (Exception e) {

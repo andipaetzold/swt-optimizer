@@ -58,21 +58,32 @@ public class Manager implements OptimizeMethod, OptimizerListener {
     }
 
     /// Optimize ///
-    private boolean running = false;
+    private List<Thread> optimizerThreads = new ArrayList<>();
 
     @Override
     public void optimize(double value) {
-        if (running) {
-            return;
+        for (Thread thread : optimizerThreads) {
+            if (thread.isAlive()) {
+                return;
+            }
         }
-        running = true;
 
+        optimizerThreads.clear();
         for (OptimizerFactory factory : optimizers) {
-            new Thread(() -> {
+            Thread t = new Thread(() -> {
                 Optimizer optimizer = factory.createOptimizer();
+
+                // set result to null
+                for (FrontendInterface frontend : frontends) {
+                    frontend.setOptimizerResult(optimizer.getOptimizerType(), null);
+                }
+
+                // add listener and start optimizing
                 optimizer.addOptimizerListener(this);
                 optimizer.optimize(value);
-            }).start();
+            });
+            optimizerThreads.add(t);
+            t.start();
         }
     }
 
@@ -88,8 +99,6 @@ public class Manager implements OptimizeMethod, OptimizerListener {
         for (FrontendInterface frontend : frontends) {
             frontend.setOptimizerResult(event.getSource().getOptimizerType(), event.getResult());
         }
-
-        // TODO: done
     }
 
 }

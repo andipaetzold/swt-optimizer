@@ -23,7 +23,7 @@
 				<configuration>
 					<instructions>
 						<Export-Package>
-							de.andipaetzold.swt.optimizer.optimizerbase,de.andipaetzold.swt.optimizer.optimizerbase.event;version="1.0"
+							de.andipaetzold.swt.optimizer.optimizerbase.*;version="1.0"
 						</Export-Package>
  					</instructions>
 				</configuration>

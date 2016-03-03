@@ -1,37 +1,39 @@
 package de.andipaetzold.swt.optimizer.manager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import de.andipaetzold.swt.optimizer.manager.util.Tuple;
 import de.andipaetzold.swt.optimizer.optimizerbase.Optimizer;
-import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
+import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerStatus;
 import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerListener;
 import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerResultEvent;
 import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerStatusChangedEvent;
+import de.andipaetzold.swt.optimizer.optimizerbase.factory.OptimizerFactory;
 
 public class Manager implements OptimizeMethod, OptimizerListener {
-    private List<OptimizerFactory> optimizers = new ArrayList<>();
+    private Map<OptimizerFactory, Tuple<Thread, Double>> factories = new HashMap<>();
+
     private List<FrontendInterface> frontends = new ArrayList<>();
 
-    public Manager() {
-    }
-
     /// Optimizer ///
-    public void addOptimizer(OptimizerFactory optimizerFactory) {
-        optimizers.add(optimizerFactory);
+    public void addOptimizer(OptimizerFactory factory) {
+        factories.put(factory, new Tuple<Thread, Double>(null, null));
 
         // send to listeners
         for (FrontendInterface frontend : frontends) {
-            frontend.addOptimizer(optimizerFactory.getOptimizerType());
+            frontend.addOptimizer(factory.getOptimizerType());
         }
     }
 
-    public void removeOptimizer(OptimizerFactory optimizerFactory) {
-        optimizers.remove(optimizerFactory);
+    public void removeOptimizer(OptimizerFactory factory) {
+        factories.remove(factory);
 
         // send to listeners
         for (FrontendInterface frontend : frontends) {
-            frontend.removeOptimizer(optimizerFactory.getOptimizerType());
+            frontend.removeOptimizer(factory.getOptimizerType());
         }
 
     }
@@ -41,8 +43,22 @@ public class Manager implements OptimizeMethod, OptimizerListener {
         frontends.add(frontend);
 
         // add all optimizers to list
-        for (OptimizerFactory optimizer : optimizers) {
-            frontend.addOptimizer(optimizer.getOptimizerType());
+        for (Map.Entry<OptimizerFactory, Tuple<Thread, Double>> entry : factories.entrySet()) {
+            String factoryName = entry.getKey().getOptimizerType();
+            frontend.addOptimizer(factoryName);
+
+            // Thread
+            Thread t = entry.getValue().item1;
+            if (t == null) {
+                frontend.setOptimizerStatus(factoryName, OptimizerStatus.WAITING);
+            } else if (t.isAlive()) {
+                frontend.setOptimizerStatus(factoryName, OptimizerStatus.RUNNING);
+            } else {
+                frontend.setOptimizerStatus(factoryName, OptimizerStatus.FINISHED);
+            }
+
+            // Result
+            frontend.setOptimizerResult(factoryName, entry.getValue().item2);
         }
 
         // set optimizer method
@@ -58,20 +74,17 @@ public class Manager implements OptimizeMethod, OptimizerListener {
     }
 
     /// Optimize ///
-    private List<Thread> optimizerThreads = new ArrayList<>();
-
     @Override
     public void optimize(double value) {
-        for (Thread thread : optimizerThreads) {
-            if (thread.isAlive()) {
-                return;
-            }
+        if (isRunning()) {
+            return;
         }
 
-        optimizerThreads.clear();
-        for (OptimizerFactory factory : optimizers) {
+        for (Map.Entry<OptimizerFactory, Tuple<Thread, Double>> entry : factories.entrySet()) {
+            entry.getValue().item2 = null;
+
             Thread t = new Thread(() -> {
-                Optimizer optimizer = factory.createOptimizer();
+                Optimizer optimizer = entry.getKey().createOptimizer();
 
                 // set result to null
                 for (FrontendInterface frontend : frontends) {
@@ -82,7 +95,7 @@ public class Manager implements OptimizeMethod, OptimizerListener {
                 optimizer.addOptimizerListener(this);
                 optimizer.optimize(value);
             });
-            optimizerThreads.add(t);
+            entry.getValue().item1 = t;
             t.start();
         }
     }
@@ -96,9 +109,20 @@ public class Manager implements OptimizeMethod, OptimizerListener {
 
     @Override
     public void handleOptimizerResult(OptimizerResultEvent event) {
+        factories.get(event.getSource().getFactory()).item2 = event.getResult();
+
         for (FrontendInterface frontend : frontends) {
             frontend.setOptimizerResult(event.getSource().getOptimizerType(), event.getResult());
         }
+    }
+
+    private boolean isRunning() {
+        for (Tuple<Thread, Double> entry : factories.values()) {
+            if (entry.item1 != null && entry.item1.isAlive()) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

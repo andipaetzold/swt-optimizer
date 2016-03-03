@@ -4,7 +4,7 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
-import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
+import de.andipaetzold.swt.optimizer.optimizerbase.factory.OptimizerFactory;
 
 public class OptimizerTwoActivator implements BundleActivator {
     private ServiceRegistration<OptimizerFactory> registration;

@@ -42,7 +42,7 @@ public class FrontendActivator implements BundleActivator {
             Manager manager = context.getServiceObjects(managerReference).getService();
             manager.addFrontend(frontendWindow.getController());
         } catch (Exception e) {
-            System.out.println("Problem adding frontend to manager");
+            e.printStackTrace();
         }
     }
 

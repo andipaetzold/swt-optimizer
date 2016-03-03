@@ -1,9 +1,9 @@
 package de.andipaetzold.swt.optimizer.optimizertwo;
 
 import de.andipaetzold.swt.optimizer.optimizerbase.Optimizer;
-import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
+import de.andipaetzold.swt.optimizer.optimizerbase.factory.AbstractOptimizerFactory;
 
-public class OptimizerTwoFactory implements OptimizerFactory {
+public class OptimizerTwoFactory extends AbstractOptimizerFactory {
     @Override
     public Optimizer createOptimizer() {
         return new OptimizerTwo(this);

@@ -103,7 +103,7 @@ public class Manager implements OptimizeMethod, OptimizerListener {
     public void handleOptimizerResult(OptimizerResultEvent event) {
         results.put(event.getSource().getOptimizerType(), event.getResult());
 
-        setStatus("optimizing...", Math.min(1, results.size() / optimizers.size()));
+        setStatus("optimizing...", Math.min(1, results.size() / (double) optimizers.size()));
 
         if (results.size() == optimizers.size()) {
             setStatus("done", 1);

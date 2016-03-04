@@ -18,11 +18,11 @@ public class OptimizerTwo extends AbstractOptimizer {
         setStatus(OptimizerStatus.RUNNING);
 
         try {
-            Thread.sleep(20000 + new Random().nextInt(10000));
+            Thread.sleep(2000 + new Random().nextInt(10000));
         } catch (InterruptedException e) {
         }
 
-        setResult(new Random().nextDouble());
+        setResult(value * new Random().nextDouble());
         setStatus(OptimizerStatus.FINISHED);
     }
 }

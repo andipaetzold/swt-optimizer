@@ -22,7 +22,7 @@ public class OptimizerOne extends AbstractOptimizer {
         } catch (InterruptedException e) {
         }
 
-        setResult(new Random().nextDouble());
+        setResult(value * new Random().nextDouble());
         setStatus(OptimizerStatus.FINISHED);
     }
 }

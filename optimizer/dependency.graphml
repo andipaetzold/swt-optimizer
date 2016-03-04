@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?> <graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:y="http://www.yworks.com/xml/graphml" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
-  <key for="node" id="d0" yfiles.type="nodegraphics"/> 
-  <key for="edge" id="d1" yfiles.type="edgegraphics"/> 
-<graph id="dependencies" edgedefault="directed">
-<node id="404152906"><data key="d0"><y:ShapeNode><y:NodeLabel>de.andipaetzold.swt:optimizer:pom:1.0</y:NodeLabel></y:ShapeNode></data></node>
-<node id="956337311"><data key="d0"><y:ShapeNode><y:NodeLabel>org.apache.felix:org.apache.felix.framework:jar:5.4.0:compile</y:NodeLabel></y:ShapeNode></data></node>
-<edge source="404152906" target="956337311"><data key="d1"><y:PolyLineEdge><y:EdgeLabel>compile</y:EdgeLabel></y:PolyLineEdge></data></edge>
-</graph></graphml>

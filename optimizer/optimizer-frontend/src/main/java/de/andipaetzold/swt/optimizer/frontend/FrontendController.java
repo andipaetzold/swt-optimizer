@@ -14,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -44,9 +45,11 @@ public class FrontendController implements Initializable {
             resultColumn.setCellValueFactory(new PropertyValueFactory<>("result"));
             optimizerTable.setItems(observableOptimizerStatus);
 
-            // status / progress
-            progress.setProgress(0);
+            // table text
+            optimizerTable.setPlaceholder(new Label("No optimizer available"));
         });
+
+        recalcUI();
     }
 
     /// Spinner ///
@@ -67,6 +70,11 @@ public class FrontendController implements Initializable {
             Dictionary<String, Object> props = new Hashtable<>();
             props.put("value", getInputSpinnerValue());
             eventAdmin.sendEvent(new Event("de/andipaetzold/swt/optimizer/manager/OPTIMIZE", props));
+
+            JavaFxUtils.runAndWait(() -> {
+                startButton.setDisable(true);
+                inputSpinner.setDisable(true);
+            });
         }
     }
 
@@ -93,7 +101,7 @@ public class FrontendController implements Initializable {
         OptimizerTableRow optimizerStatus = getOptimizerStatus(optimizer);
         if (optimizerStatus != null) {
             optimizerStatus.setStatus(status);
-            recalcProgress();
+            recalcUI();
         }
     }
 
@@ -101,7 +109,7 @@ public class FrontendController implements Initializable {
         OptimizerTableRow status = getOptimizerStatus(optimizer);
         if (status == null) {
             observableOptimizerStatus.add(new OptimizerTableRow(optimizer));
-            recalcProgress();
+            recalcUI();
         }
     }
 
@@ -109,7 +117,7 @@ public class FrontendController implements Initializable {
         OptimizerTableRow optimizerStatus = getOptimizerStatus(optimizer);
         if (optimizerStatus != null) {
             observableOptimizerStatus.remove(optimizerStatus);
-            recalcProgress();
+            recalcUI();
         }
     }
 
@@ -122,22 +130,47 @@ public class FrontendController implements Initializable {
         return null;
     }
 
-    /// Progress ///
+    /// Interface / Progress ///
     @FXML
     private ProgressIndicator progress;
 
-    private void recalcProgress() {
+    private void recalcUI() {
         int sum = observableOptimizerStatus.size();
+        if (sum == 0) {
+            JavaFxUtils.runAndWait(() -> {
+                progress.setProgress(0);
+                startButton.setDisable(true);
+                inputSpinner.setDisable(true);
+            });
+            return;
+        }
+
+        // progress
         int finished = 0;
         for (OptimizerTableRow observableStatus : observableOptimizerStatus) {
             if (observableStatus.getStatus().equals(OptimizerStatus.FINISHED.toString())) {
                 finished++;
             }
         }
+
         double result = finished / (double) sum;
 
         JavaFxUtils.runAndWait(() -> {
             progress.setProgress(result);
+        });
+
+        // disable
+        for (OptimizerTableRow observableStatus : observableOptimizerStatus) {
+            if (observableStatus.getStatus().equals(OptimizerStatus.RUNNING.toString())) {
+                JavaFxUtils.runAndWait(() -> {
+                    startButton.setDisable(true);
+                    inputSpinner.setDisable(true);
+                });
+            }
+        }
+        JavaFxUtils.runAndWait(() -> {
+            startButton.setDisable(false);
+            inputSpinner.setDisable(false);
         });
     }
 }

@@ -36,7 +36,7 @@ Diese Module implementieren die zuvor erläuterten Basisklassen bzw. -interfaces
 Abgesehen von der Registrierung des _Services_ und dem Erzeugen des _EventAdmins_, wird hier keinerlei Funktionalität implementiert. Dies geschieht in der zuvor erläuterten optimizer-base.
 
 ### optimizer-manager
-Der Manager verwaltet alle Optimierer (_OptimizerFactory_) die sich als Service registriert haben. Beim Starten eines Optimierungslaufs werden diese genutzt, um die entsprechenden Optimierer zu erzeugen. Jeder Optimierer wird in einem separaten Thread gestartet, um ein paralleles abarbeiten zu gewährleisten. Anhand dieser Threads kann auch festgestellt werden, ob ein neuer Optimierungslauf gestartet werden darf oder nicht.
+Der Manager verwaltet alle Optimierer (_OptimizerFactory_) die sich als Service registriert haben. Beim Starten eines Optimierungslaufs werden diese genutzt, um die entsprechenden Optimierer zu erzeugen. Jeder Optimierer wird in einem separaten Thread gestartet, um ein paralleles abarbeiten zu gewährleisten.
 
 Da die Kommunikation mit der Benutzeroberfläche über den _EventAdmin_ abläuft, dient die Klasse _ManagerEventHandler_ zum Empfangen der gesendeten Nachrichten.
 

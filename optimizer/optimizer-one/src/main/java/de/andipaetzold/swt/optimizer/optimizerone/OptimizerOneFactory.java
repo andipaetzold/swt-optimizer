@@ -19,6 +19,6 @@ public class OptimizerOneFactory implements OptimizerFactory {
 
     @Override
     public String getOptimizerType() {
-        return "Two";
+        return "One";
     }
 }

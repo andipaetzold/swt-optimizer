@@ -28,7 +28,6 @@ public class FrontendEventHandler implements EventHandler {
 
     @Override
     public void handleEvent(Event event) {
-        System.out.println(event.getTopic());
         switch (event.getTopic()) {
             case "de/andipaetzold/swt/optimizer/frontend/ADD":
                 controller.addOptimizer(event.getProperty("optimizer").toString());

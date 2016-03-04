@@ -10,7 +10,8 @@ import org.osgi.service.event.EventHandler;
 
 public class ManagerEventHandler implements EventHandler {
     public static void register(BundleContext context, Manager manager) {
-        String[] topics = new String[] { "de/andipaetzold/swt/optimizer/manager/*" };
+        String[] topics = new String[] { "de/andipaetzold/swt/optimizer/manager/*",
+                "org/osgi/framework/BundleEvent/STARTED" };
 
         Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put(EventConstants.EVENT_TOPIC, topics);
@@ -26,10 +27,14 @@ public class ManagerEventHandler implements EventHandler {
 
     @Override
     public void handleEvent(Event event) {
-        System.out.println(event.getTopic());
         switch (event.getTopic()) {
             case "de/andipaetzold/swt/optimizer/manager/OPTIMIZE":
                 manager.optimize((double) event.getProperty("value"));
+                break;
+            case "org/osgi/framework/BundleEvent/STARTED":
+                if (event.getProperty("bundle.symbolicName").equals("de.andipaetzold.swt.optimizer-frontend")) {
+                    manager.resendOptimizerStatus();
+                }
                 break;
         }
     }

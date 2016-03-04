@@ -1,16 +1,19 @@
 package de.andipaetzold.swt.optimizer.optimizerbase;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
-import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerListener;
-import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerResultEvent;
-import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerStatusChangedEvent;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 
 public abstract class AbstractOptimizer implements Optimizer {
+    private EventAdmin eventAdmin;
 
-    public AbstractOptimizer(OptimizerFactory optimizerFactory) {
+    public AbstractOptimizer(EventAdmin eventAdmin, OptimizerFactory optimizerFactory) {
+        this.eventAdmin = eventAdmin;
         this.factory = optimizerFactory;
+
+        setResult(null);
     }
 
     /// Factory ///
@@ -19,19 +22,6 @@ public abstract class AbstractOptimizer implements Optimizer {
     @Override
     public String getOptimizerType() {
         return factory.getOptimizerType();
-    }
-
-    /// Listeners ///
-    private List<OptimizerListener> listeners = new ArrayList<>();
-
-    @Override
-    public void addOptimizerListener(OptimizerListener listener) {
-        listeners.add(listener);
-    }
-
-    @Override
-    public void removeOptimizerListener(OptimizerListener listener) {
-        listeners.remove(listener);
     }
 
     /// Result ///
@@ -45,9 +35,13 @@ public abstract class AbstractOptimizer implements Optimizer {
     protected void setResult(Double result) {
         this.result = result;
 
-        for (OptimizerListener listener : listeners) {
-            listener.handleOptimizerResult(new OptimizerResultEvent(this, result));
+        // send result
+        Dictionary<String, Object> props = new Hashtable<>();
+        props.put("optimizer", getOptimizerType());
+        if (result != null) {
+            props.put("result", result);
         }
+        eventAdmin.sendEvent(new Event("de/andipaetzold/swt/optimizer/frontend/RESULT", props));
     }
 
     /// Status ///
@@ -61,8 +55,17 @@ public abstract class AbstractOptimizer implements Optimizer {
     protected void setStatus(OptimizerStatus status) {
         this.status = status;
 
-        for (OptimizerListener listener : listeners) {
-            listener.handleOptimizerStatusChanged(new OptimizerStatusChangedEvent(this, status));
-        }
+        // send status
+        Dictionary<String, Object> props = new Hashtable<>();
+        props.put("optimizer", getOptimizerType());
+        props.put("status", status);
+        eventAdmin.sendEvent(new Event("de/andipaetzold/swt/optimizer/frontend/STATUS", props));
+    }
+
+    /// Resend ///
+    @Override
+    public void resend() {
+        setResult(result);
+        setStatus(status);
     }
 }

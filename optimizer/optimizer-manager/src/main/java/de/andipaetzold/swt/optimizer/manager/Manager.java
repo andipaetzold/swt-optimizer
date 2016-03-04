@@ -1,29 +1,28 @@
 package de.andipaetzold.swt.optimizer.manager;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
+
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 
 import de.andipaetzold.swt.optimizer.optimizerbase.Optimizer;
 import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
 import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerStatus;
-import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerListener;
-import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerResultEvent;
-import de.andipaetzold.swt.optimizer.optimizerbase.event.OptimizerStatusChangedEvent;
 
-public class Manager implements OptimizeMethod, OptimizerListener {
+public class Manager {
     private final List<OptimizerFactory> factories = new ArrayList<>();
 
-    private final List<FrontendInterface> frontends = new ArrayList<>();
+    public Manager(EventAdmin eventAdmin) {
+        this.eventAdmin = eventAdmin;
+    }
 
     /// Optimizer ///
     public void addOptimizer(OptimizerFactory factory) {
-        // add
         factories.add(factory);
-
-        // send to listeners
-        for (FrontendInterface frontend : frontends) {
-            frontend.addOptimizer(factory.getOptimizerType());
-        }
+        sendAddOptimizer(factory.getOptimizerType());
 
         // start if running
         if (isRunning()) {
@@ -32,92 +31,34 @@ public class Manager implements OptimizeMethod, OptimizerListener {
     }
 
     public void removeOptimizer(OptimizerFactory factory) {
-        // remove
         factories.remove(factory);
-
-        // send to listeners
-        for (FrontendInterface frontend : frontends) {
-            frontend.removeOptimizer(factory.getOptimizerType());
-        }
-    }
-
-    /// Status Listener ///
-    public void addFrontend(FrontendInterface frontend) {
-        frontends.add(frontend);
-
-        // add all optimizers to list
-        for (OptimizerFactory factory : factories) {
-            frontend.addOptimizer(factory.getOptimizerType());
-        }
-
-        // set optimizer status
-        for (Optimizer optimizer : optimizers) {
-            frontend.setOptimizerStatus(optimizer.getOptimizerType(), optimizer.getStatus());
-            frontend.setOptimizerResult(optimizer.getOptimizerType(), optimizer.getResult());
-        }
-
-        // set optimizer method
-        frontend.setOptimizeMethod(this);
-
-    }
-
-    public void removeFrontend(FrontendInterface frontend) {
-        frontends.remove(frontend);
-
-        // remove optimizer method
-        frontend.setOptimizeMethod(null);
+        sendRemoveOptimizer(factory.getOptimizerType());
     }
 
     /// Optimize ///
     private final List<Optimizer> optimizers = new ArrayList<>();
     private double startValue;
 
-    @Override
     public void optimize(double value) {
         if (isRunning()) {
             return;
         }
 
-        optimizers.clear();
-
         startValue = value;
+
+        optimizers.clear();
         for (OptimizerFactory factory : factories) {
             startOptimizer(factory);
         }
     }
 
     private void startOptimizer(OptimizerFactory factory) {
-        // set result to null
-        for (FrontendInterface frontend : frontends) {
-            frontend.setOptimizerResult(factory.getOptimizerType(), null);
-        }
-
-        // create optimizer
         Optimizer optimizer = factory.createOptimizer();
-        optimizer.addOptimizerListener(this);
         optimizers.add(optimizer);
 
-        // optimize
         new Thread(() -> {
             optimizer.optimize(startValue);
         }).start();
-    }
-
-    /// Handle Optimizer///
-    @Override
-    public void handleOptimizerStatusChanged(OptimizerStatusChangedEvent event) {
-        // send status
-        for (FrontendInterface frontend : frontends) {
-            frontend.setOptimizerStatus(event.getSource().getOptimizerType(), event.getStatus());
-        }
-    }
-
-    @Override
-    public void handleOptimizerResult(OptimizerResultEvent event) {
-        // send result
-        for (FrontendInterface frontend : frontends) {
-            frontend.setOptimizerResult(event.getSource().getOptimizerType(), event.getResult());
-        }
     }
 
     /// Running ///
@@ -128,5 +69,31 @@ public class Manager implements OptimizeMethod, OptimizerListener {
             }
         }
         return false;
+    }
+
+    /// Event Admin ///
+    private EventAdmin eventAdmin;
+
+    private void sendAddOptimizer(String optimizer) {
+        Dictionary<String, Object> props = new Hashtable<>();
+        props.put("optimizer", optimizer);
+        eventAdmin.sendEvent(new Event("de/andipaetzold/swt/optimizer/frontend/ADD", props));
+    }
+
+    private void sendRemoveOptimizer(String optimizer) {
+        // send to listeners
+        Dictionary<String, Object> props = new Hashtable<>();
+        props.put("optimizer", optimizer);
+        eventAdmin.sendEvent(new Event("de/andipaetzold/swt/optimizer/frontend/REMOVE", props));
+    }
+
+    public void resendOptimizerStatus() {
+        for (OptimizerFactory factory : factories) {
+            sendAddOptimizer(factory.getOptimizerType());
+        }
+
+        for (Optimizer optimizer : optimizers) {
+            optimizer.resend();
+        }
     }
 }

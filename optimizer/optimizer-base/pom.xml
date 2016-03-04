@@ -25,6 +25,9 @@
 						<Export-Package>
 							de.andipaetzold.swt.optimizer.optimizerbase.*;version="1.0"
 						</Export-Package>
+						<Import-Package>
+							org.osgi.service.event;version="[1.0,2.0)"
+						</Import-Package>
  					</instructions>
 				</configuration>
 			</plugin>
@@ -34,4 +37,12 @@
 			</plugin>
 		</plugins>
 	</build>
+
+	<dependencies>
+        <dependency>
+			<groupId>org.apache.felix</groupId>
+			<artifactId>org.apache.felix.eventadmin</artifactId>
+			<version>1.4.6</version>
+		</dependency>
+	</dependencies>
 </project>

@@ -1,10 +1,13 @@
 package de.andipaetzold.swt.optimizer.frontend;
 
 import java.net.URL;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.ResourceBundle;
 
-import de.andipaetzold.swt.optimizer.manager.FrontendInterface;
-import de.andipaetzold.swt.optimizer.manager.OptimizeMethod;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
+
 import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerStatus;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +21,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
-public class FrontendController implements Initializable, FrontendInterface {
+public class FrontendController implements Initializable {
+    /// Event Admin ///
+    private EventAdmin eventAdmin;
+
+    public void setEventAdmin(EventAdmin eventAdmin) {
+        this.eventAdmin = eventAdmin;
+    }
+
     /// initialize ///
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -53,17 +63,11 @@ public class FrontendController implements Initializable, FrontendInterface {
 
     @FXML
     private void startButtonClicked() {
-        if (optimizeMethod != null) {
-            optimizeMethod.optimize(getInputSpinnerValue());
+        if (eventAdmin != null) {
+            Dictionary<String, Object> props = new Hashtable<>();
+            props.put("value", getInputSpinnerValue());
+            eventAdmin.sendEvent(new Event("de/andipaetzold/swt/optimizer/manager/OPTIMIZE", props));
         }
-    }
-
-    /// Optimize Method ///
-    private OptimizeMethod optimizeMethod = null;
-
-    @Override
-    public void setOptimizeMethod(OptimizeMethod optimizeMethod) {
-        this.optimizeMethod = optimizeMethod;
     }
 
     /// Optimizer Table ///
@@ -78,7 +82,6 @@ public class FrontendController implements Initializable, FrontendInterface {
     @FXML
     private TableColumn<OptimizerTableRow, String> resultColumn;
 
-    @Override
     public void setOptimizerResult(String optimizer, Double result) {
         OptimizerTableRow optimizerStatus = getOptimizerStatus(optimizer);
         if (optimizerStatus != null) {
@@ -86,7 +89,6 @@ public class FrontendController implements Initializable, FrontendInterface {
         }
     }
 
-    @Override
     public void setOptimizerStatus(String optimizer, OptimizerStatus status) {
         OptimizerTableRow optimizerStatus = getOptimizerStatus(optimizer);
         if (optimizerStatus != null) {
@@ -95,7 +97,6 @@ public class FrontendController implements Initializable, FrontendInterface {
         }
     }
 
-    @Override
     public void addOptimizer(String optimizer) {
         OptimizerTableRow status = getOptimizerStatus(optimizer);
         if (status == null) {
@@ -104,7 +105,6 @@ public class FrontendController implements Initializable, FrontendInterface {
         }
     }
 
-    @Override
     public void removeOptimizer(String optimizer) {
         OptimizerTableRow optimizerStatus = getOptimizerStatus(optimizer);
         if (optimizerStatus != null) {

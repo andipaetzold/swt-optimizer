@@ -12,6 +12,7 @@
   
 	<artifactId>optimizer-manager</artifactId>
 	<packaging>bundle</packaging>
+	<name>Manager</name>
 
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>

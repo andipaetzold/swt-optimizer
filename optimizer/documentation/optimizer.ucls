@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.9" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true"
+  realizations="true" associations="true" dependencies="false" nesting-relationships="true" router="FAN">
+  <class id="1" language="java" name="de.andipaetzold.swt.optimizer.optimizerbase.AbstractOptimizer"
+    project="optimizer-base"
+    file="../optimizer-base/src/main/java/de/andipaetzold/swt/optimizer/optimizerbase/AbstractOptimizer.java"
+    binary="false" corner="BOTTOM_RIGHT">
+    <position height="-1" width="-1" x="400" y="275"/>
+    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true"
+      sort-features="false" accessors="true" visibility="true">
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>
+      <operations public="true" package="true" protected="true" private="false" static="true"/>
+    </display>
+  </class>
+  <interface id="2" language="java" name="de.andipaetzold.swt.optimizer.optimizerbase.Optimizer"
+    project="optimizer-base"
+    file="../optimizer-base/src/main/java/de/andipaetzold/swt/optimizer/optimizerbase/Optimizer.java" binary="false"
+    corner="BOTTOM_RIGHT">
+    <position height="-1" width="-1" x="400" y="75"/>
+    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true"
+      sort-features="false" accessors="true" visibility="true">
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>
+      <operations public="true" package="true" protected="true" private="false" static="true"/>
+    </display>
+  </interface>
+  <class id="3" language="java" name="de.andipaetzold.swt.optimizer.optimizerone.OptimizerOne" project="optimizer-one"
+    file="../optimizer-one/src/main/java/de/andipaetzold/swt/optimizer/optimizerone/OptimizerOne.java" binary="false"
+    corner="BOTTOM_RIGHT">
+    <position height="-1" width="-1" x="150" y="450"/>
+    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true"
+      sort-features="false" accessors="true" visibility="true">
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>
+      <operations public="true" package="true" protected="true" private="false" static="true"/>
+    </display>
+  </class>
+  <class id="4" language="java" name="de.andipaetzold.swt.optimizer.optimizertwo.OptimizerTwo" project="optimizer-two"
+    file="../optimizer-two/src/main/java/de/andipaetzold/swt/optimizer/optimizertwo/OptimizerTwo.java" binary="false"
+    corner="BOTTOM_RIGHT">
+    <position height="-1" width="-1" x="400" y="450"/>
+    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true"
+      sort-features="false" accessors="true" visibility="true">
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>
+      <operations public="true" package="true" protected="true" private="false" static="true"/>
+    </display>
+  </class>
+  <class id="5" language="java" name="de.andipaetzold.swt.optimizer.optimizerthree.OptimizerThree"
+    project="optimizer-three"
+    file="../optimizer-three/src/main/java/de/andipaetzold/swt/optimizer/optimizerthree/OptimizerThree.java"
+    binary="false" corner="BOTTOM_RIGHT">
+    <position height="-1" width="-1" x="650" y="450"/>
+    <display autosize="true" stereotype="false" package="true" initial-value="false" signature="true"
+      sort-features="false" accessors="true" visibility="true">
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>
+      <operations public="true" package="true" protected="true" private="false" static="true"/>
+    </display>
+  </class>
+  <realization id="6">
+    <end type="SOURCE" refId="1"/>
+    <end type="TARGET" refId="2"/>
+  </realization>
+  <generalization id="7">
+    <end type="SOURCE" refId="3"/>
+    <end type="TARGET" refId="1"/>
+  </generalization>
+  <generalization id="8">
+    <end type="SOURCE" refId="4"/>
+    <end type="TARGET" refId="1"/>
+  </generalization>
+  <generalization id="9">
+    <end type="SOURCE" refId="5"/>
+    <end type="TARGET" refId="1"/>
+  </generalization>
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true"
+    sort-features="false" accessors="true" visibility="true">
+    <attributes public="true" package="true" protected="true" private="false" static="true"/>
+    <operations public="true" package="true" protected="true" private="false" static="true"/>
+  </classifier-display>
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>

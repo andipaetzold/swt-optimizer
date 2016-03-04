@@ -126,7 +126,7 @@ public class FrontendController implements Initializable {
     @FXML
     private ProgressIndicator progress;
 
-    public void recalcProgress() {
+    private void recalcProgress() {
         int sum = observableOptimizerStatus.size();
         int finished = 0;
         for (OptimizerTableRow observableStatus : observableOptimizerStatus) {

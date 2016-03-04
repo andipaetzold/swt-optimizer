@@ -4,10 +4,7 @@ import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerStatus;
 import javafx.beans.property.SimpleStringProperty;
 
 public class OptimizerTableRow {
-    private SimpleStringProperty optimizer = new SimpleStringProperty();
-    private SimpleStringProperty status = new SimpleStringProperty();
-    private SimpleStringProperty result = new SimpleStringProperty();
-
+    /// Constructor ///
     public OptimizerTableRow(String optimizer) {
         this(optimizer, OptimizerStatus.WAITING, null);
     }
@@ -22,6 +19,9 @@ public class OptimizerTableRow {
         setResult(result);
     }
 
+    /// Optimizer ///
+    private SimpleStringProperty optimizer = new SimpleStringProperty();
+
     public String getOptimizer() {
         return optimizer.get();
     }
@@ -34,6 +34,9 @@ public class OptimizerTableRow {
         return optimizer;
     }
 
+    /// Status ///
+    private SimpleStringProperty status = new SimpleStringProperty();
+
     public String getStatus() {
         return status.get();
     }
@@ -45,6 +48,9 @@ public class OptimizerTableRow {
     public SimpleStringProperty statusProperty() {
         return status;
     }
+
+    /// Result ///
+    private SimpleStringProperty result = new SimpleStringProperty();
 
     public String getResult() {
         return result.get();

@@ -11,6 +11,7 @@ import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
 public class ManagerActivator implements BundleActivator {
     private ServiceTracker<OptimizerFactory, OptimizerFactory> optimizerTracker;
 
+    /// Start ///
     @Override
     public void start(BundleContext context) throws Exception {
         // EventAdmin
@@ -29,6 +30,7 @@ public class ManagerActivator implements BundleActivator {
         ManagerEventHandler.register(context, manager);
     }
 
+    /// Stop ///
     @Override
     public void stop(BundleContext context) throws Exception {
         optimizerTracker.close();

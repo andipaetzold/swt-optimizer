@@ -8,15 +8,11 @@ import org.osgi.service.event.EventAdmin;
 public class FrontendActivator implements BundleActivator {
     private FrontendWindow frontendWindow;
 
+    /// Start ///
     @Override
     public void start(BundleContext context) throws Exception {
         JavaFxUtils.initJavaFx();
         JavaFxUtils.runAndWait(() -> startUI(context));
-    }
-
-    @Override
-    public void stop(BundleContext context) throws Exception {
-        JavaFxUtils.runAndWait(() -> stopUI(context));
     }
 
     private void startUI(BundleContext context) {
@@ -37,6 +33,12 @@ public class FrontendActivator implements BundleActivator {
 
         // Event Handler
         FrontendEventHandler.register(context, frontendWindow.getController());
+    }
+
+    /// Stop ///
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        JavaFxUtils.runAndWait(() -> stopUI(context));
     }
 
     private void stopUI(BundleContext context) {

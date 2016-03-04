@@ -16,11 +16,12 @@ public class OptimizerThree extends AbstractOptimizer {
     @Override
     public void optimize(double value) {
         setStatus(OptimizerStatus.RUNNING);
+
         try {
-            Thread.sleep(new Random().nextInt(5000));
+            Thread.sleep(3000 + new Random().nextInt(15000));
         } catch (InterruptedException e) {
-            e.printStackTrace();
         }
+
         setResult(new Random().nextDouble());
         setStatus(OptimizerStatus.FINISHED);
     }

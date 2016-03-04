@@ -16,10 +16,6 @@ public class JavaFxUtils {
         }
     }
 
-    public static void exitJavaFx() {
-        Platform.runLater(() -> Platform.exit());
-    }
-
     public static void runAndWait(Runnable runnable) {
         try {
             if (Platform.isFxApplicationThread()) {

@@ -14,7 +14,6 @@ import javafx.stage.WindowEvent;
 public class FrontendWindow {
     private Stage stage;
     private Parent root = null;
-    private FrontendController controller;
 
     private List<EventHandler<WindowEvent>> onCloseHandlers = new ArrayList<>();
 
@@ -23,6 +22,7 @@ public class FrontendWindow {
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(this.getClass().getResource("FrontendWindow.fxml"));
             loader.setClassLoader(this.getClass().getClassLoader());
+
             root = loader.load();
             controller = loader.getController();
         } catch (IOException e) {
@@ -30,6 +30,7 @@ public class FrontendWindow {
         }
     }
 
+    /// Show ///
     public void show() {
         if (stage == null) {
             stage = new Stage();
@@ -43,6 +44,7 @@ public class FrontendWindow {
         stage.show();
     }
 
+    /// Close ///
     public void close() {
         if (stage != null) {
             stage.close();
@@ -56,6 +58,9 @@ public class FrontendWindow {
     public void removeOnCloseEventHandler(EventHandler<WindowEvent> event) {
         onCloseHandlers.remove(event);
     }
+
+    /// Controller ///
+    private FrontendController controller;
 
     public FrontendController getController() {
         return controller;

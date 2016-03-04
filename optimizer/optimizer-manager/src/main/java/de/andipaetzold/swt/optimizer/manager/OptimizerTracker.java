@@ -7,13 +7,13 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import de.andipaetzold.swt.optimizer.optimizerbase.OptimizerFactory;
 
 public class OptimizerTracker implements ServiceTrackerCustomizer<OptimizerFactory, OptimizerFactory> {
-    private BundleContext bundleContext;
-    private Manager manager;
-
     public OptimizerTracker(BundleContext bundleContext, Manager manager) {
         this.bundleContext = bundleContext;
         this.manager = manager;
     }
+
+    /// Events ///
+    private BundleContext bundleContext;
 
     @Override
     public OptimizerFactory addingService(ServiceReference<OptimizerFactory> reference) {
@@ -32,6 +32,9 @@ public class OptimizerTracker implements ServiceTrackerCustomizer<OptimizerFacto
     public void removedService(ServiceReference<OptimizerFactory> reference, OptimizerFactory service) {
         removeService(service);
     }
+
+    /// Manager ///
+    private Manager manager;
 
     public void addService(OptimizerFactory service) {
         manager.addOptimizer(service);

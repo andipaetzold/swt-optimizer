@@ -1,9 +1,26 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
 	<groupId>de.andipaetzold.swt</groupId>
 	<artifactId>optimizer</artifactId>
 	<version>1.0</version>
 	<packaging>pom</packaging>  
+	<name>Exercise 1 (JavaBeans &amp; OSGi)</name>
+	<url>https://github.com/andipaetzold/swt-optimizer</url>
+
+	<issueManagement>
+		<url>https://github.com/andipaetzold/swt-optimizer/issues</url>
+		<system>GitHub Issues</system>
+	</issueManagement>
+
+	<developers>
+		<developer>
+			<email>andi.paetzold@gmail.com</email>
+			<name>Andreas Pätzold</name>
+			<url>https://github.com/andipaetzold</url>
+			<id>andipaetzold</id>
+		</developer>
+	</developers>
 
 	<properties>
 		<maven.compiler.target>1.8</maven.compiler.target>
